@@ -62,9 +62,8 @@ def create_text_image(chapter_name, output_path, size=(800, 1200), font_size=50)
     # Save the image
     image.save(output_path)
 
-# Natural sorting function to sort files correctly
+# Natural sorting function to sort files and folders correctly
 def natural_sort_key(filename):
-    # Split the filename into parts: convert digits to integers and leave others as strings
     return [int(part) if part.isdigit() else part for part in re.split(r'(\d+)', filename)]
 
 # Function to merge all subfolders into one without modifying the original folder
@@ -72,19 +71,20 @@ def merge_folders(big_folder_path, output_folder, font_size):
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    subfolders = sorted(os.listdir(big_folder_path))
+    # Sort subfolders in natural order
+    subfolders = sorted(os.listdir(big_folder_path), key=natural_sort_key)
     page_number = 1
 
     for subfolder in subfolders:
         subfolder_path = os.path.join(big_folder_path, subfolder)
         if os.path.isdir(subfolder_path):
-            # Generate chapter image in a temporary location
+            # Generate chapter image in a temporary location (merged folder, not the original)
             chapter_image_path = os.path.join(output_folder, f"{page_number:05}_00_{subfolder}.png")
             create_text_image(subfolder, chapter_image_path, font_size=font_size)
 
             page_number += 1  # Increment to account for the chapter image
 
-            # Copy all images to the output folder in natural order without changing the original folder
+            # Copy all images to the output folder in natural order without modifying the original folder
             images = sorted(os.listdir(subfolder_path), key=natural_sort_key)
             for img in images:
                 src_img_path = os.path.join(subfolder_path, img)
@@ -126,7 +126,7 @@ def main():
     script_dir = os.path.dirname(os.path.realpath(__file__))
     default_output_folder_name = os.path.basename(os.path.normpath(big_folder_path))
     output_folder_name = args.file_name if args.file_name else default_output_folder_name
-    output_folder = os.path.join(script_dir, output_folder_name +"_merged_comic")
+    output_folder = os.path.join(script_dir, output_folder_name + "_merged_comic")
     cbz_file = os.path.join(script_dir, cbz_filename)
 
     # Merge folders and generate CBZ
