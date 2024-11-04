@@ -72,9 +72,12 @@ def create_text_image(chapter_name, output_path=None, size=(800, 1200), font_siz
     else:
         image.save(output_path)
 
-# Function to naturally sort files correctly
+# Function to naturally sort folders by numbers only
 def natural_sort_key(filename):
-    return [int(part) if part.isdigit() else part.lower() for part in re.split(r'(\d+)', filename)]
+    # Extract numbers from the filename; if no number is found, default to 0
+    numbers = re.findall(r'\d+', filename)
+    return int(numbers[0]) if numbers else 0
+
 
 # Custom progress bar
 def print_progress_bar(iteration, total, prefix='', suffix='', length=50, fill='█'):
