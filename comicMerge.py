@@ -33,12 +33,13 @@ def create_text_image(chapter_name, output_path=None, size=(800, 1200), font_siz
     draw = ImageDraw.Draw(image)
 
     # Use Monaco font (macOS default)
-    font_path = "/System/Library/Fonts/Monaco.ttf"
+    font_path = "./assets/fonts/BDLifelessGrotesk_Variable.ttf"
     try:
         font = ImageFont.truetype(font_path, font_size)
+        font.set_variation_by_name('Bold')
     except IOError:
         font = ImageFont.load_default()  # Fallback
-        print("Warning: Monaco.ttf not found. Using default font.")
+        print("Warning: Font not found. Using default font.")
 
     # Padding and border
     border_padding = 30
